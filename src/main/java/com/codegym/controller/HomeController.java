@@ -1,6 +1,8 @@
 package com.codegym.controller;
 
+import com.codegym.model.Role;
 import com.codegym.model.User;
+import com.codegym.service.RoleService;
 import com.codegym.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,9 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleService roleService;
+
     @GetMapping
     public String home(){
         return "home";
@@ -29,12 +34,17 @@ public class HomeController {
         return new User();
     }
 
-    @GetMapping("login")
-    public String showFormLogin(@CookieValue(value = "setUser", defaultValue = "") String setUser, Model model) {
-        Cookie cookie = new Cookie("setUser", setUser);
-        model.addAttribute("cookieValue", cookie);
-        return "login";
-    }
+
+//    @PostMapping("doLogin")
+//    public ModelAndView doLogin(){
+//        ModelAndView modelAndView = new ModelAndView("")
+//        return
+//    }
+    @ModelAttribute("roles")
+    public Iterable<Role> roles(){
+        Iterable<Role> roles = roleService.findAll();
+        return roles;
+}
 
     @GetMapping("signup")
     public ModelAndView showFormSignUp() {
@@ -50,9 +60,10 @@ public class HomeController {
             ModelAndView modelAndView = new ModelAndView("signup");
             return modelAndView;
         }
-        ModelAndView modelAndView = new ModelAndView("home");
-        modelAndView.addObject("message","Bạn đã đăng ký thành công !, mời đăng nhập !");
+        user.setRole(roleService.findById(2l));
         userService.save(user);
+        ModelAndView modelAndView = new ModelAndView("home");
+        modelAndView.addObject("message","Successful!");
         return modelAndView;
     }
 

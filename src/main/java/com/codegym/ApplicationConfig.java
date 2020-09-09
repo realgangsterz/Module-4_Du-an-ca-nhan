@@ -1,7 +1,10 @@
 package com.codegym;
 
+import com.codegym.service.RoleService;
 import com.codegym.service.UserService;
+import com.codegym.service.impl.RoleServiceImpl;
 import com.codegym.service.impl.UserServiceImpl;
+import com.codegym.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -18,11 +21,15 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
@@ -66,6 +73,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
     public TemplateEngine templateEngine() {
         TemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.addDialect(new SpringSecurityDialect());
         return templateEngine;
     }
 
@@ -106,7 +114,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/ip?useSSL=false");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/ip?useSSL=false&allowPublicKeyRetrieval=true");
         dataSource.setUsername("root");
         dataSource.setPassword("kieuanhxinh");
         return dataSource;
@@ -129,5 +137,19 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
     @Bean
     public UserService userService(){
         return new UserServiceImpl();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsServiceImpl();
+    }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+    @Bean
+    public RoleService roleService(){
+        return new RoleServiceImpl();
     }
 }

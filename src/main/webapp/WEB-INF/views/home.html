@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,13 +8,29 @@
 </head>
 <body>
 <h1> Welcome to project cá nhân version 1.0.1 - ĐXĐ_C0520H1 !!!</h1>
-<table>
-    <tr>
-        <td><a href="/login">Login</a></td>
-    </tr>
     <tr>
         <td><a href="/signup">SignUp</a></td>
     </tr>
-</table>
+
+<h3>
+    Welcome !
+    <!-- Print the logged in user name -->
+    <div sec:authorize="isAuthenticated()">
+        <span sec:authentication="principal.username"></span>
+    </div>
+</h3>
+<div sec:authorize="isAnonymous()">
+    Login as <a th:href="@{/user}">User</a> or <a th:href="@{/admin}">Admin</a>
+</div>
+<div sec:authorize="isAuthenticated()">
+    <div sec:authorize="hasRole('USER')">
+        <a th:href="@{/user}">My Profile</a>
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">My Profile</a>
+    </div>
+    <a th:href="@{/logout}">Logout</a>
+</div>
+
 </body>
 </html>

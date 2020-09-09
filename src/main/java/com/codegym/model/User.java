@@ -39,16 +39,50 @@ public class User implements Validator {
 
     private String phoneNumber;
 
+    @NotEmpty
+    @NotBlank
+    private String userName;
+
+    @OneToOne
+    private Role role;
+
     public User() {
     }
 
-    public User(@NotEmpty @NotBlank @Size(min = 5, max = 45) String firstName, @NotEmpty @NotBlank @Size(min = 5, max = 45) String lastName, @Min(18) int age, @Email String email, String password, String phoneNumber) {
+    public User(Long id, @NotEmpty @NotBlank @Size(min = 5, max = 45) String firstName, @NotEmpty @NotBlank @Size(min = 5, max = 45) String lastName, @Min(18) int age, @NotEmpty @NotBlank @Email String email, String password, String phoneNumber, String userName, Role role) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.userName = userName;
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
